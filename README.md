@@ -1,66 +1,12 @@
-## Foundry
+# MVP for Curve Lending External Oracle Provider
+This is an investigation on external oracle providers to establish a Curve Lending market.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+In this example, we attempt to create an st-yETH/crvUSD price feed based on:
+* st-yETH 4626 rate (totalAssets/totalSupply)
+* yETH/ETH StableSwap Curve pool (price_oracle)
+* Chainlink ETH/USD and crvUSD/USD feeds
 
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+# Open Questions
+* Can we do without the rate limit (price_w)?
+* Is the Chainlink heartbeat / deviation threshold creating issues with the LLAMMA soft liquidation?
+* Is price_oracle safe and secure? How easily can it be manipulated?

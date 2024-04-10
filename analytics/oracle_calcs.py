@@ -1,8 +1,6 @@
 import pandas as pd
 import asyncio
-from brownie import web3
-from dank_mids import Contract
-from dank_mids.helpers import setup_dank_w3_from_sync
+from dank_mids import Contract, web3
 
 # yETH
 ST_YETH = Contract('0x583019fF0f430721aDa9cfb4fac8F06cA104d0B4')
@@ -20,8 +18,6 @@ end_block = 19624000 # Apr-10-2024
 slice_count = 4_000
 step_size = (end_block - start_block) // slice_count
 
-dank_w3 = setup_dank_w3_from_sync(web3)
-
 def main():
     asyncio.get_event_loop().run_until_complete(_main())
 
@@ -32,7 +28,8 @@ async def _main():
     df.to_csv('dataset.csv', index=False) 
 
 async def get_data_for_block(i):
-  st_yeth_total_assets, st_yeth_total_supply, yeth_eth_price_oracle, cl_eth_usd, cl_crvusd_usd  = await asyncio.gather(
+  block, st_yeth_total_assets, st_yeth_total_supply, yeth_eth_price_oracle, cl_eth_usd, cl_crvusd_usd  = await asyncio.gather(
+    web3.eth.get_block(i),
     ST_YETH.totalAssets.coroutine(block_identifier=i, decimals=18),
     ST_YETH.totalSupply.coroutine(block_identifier=i, decimals=18), 
     YETH_ETH.price_oracle.coroutine(block_identifier=i, decimals=18), 
@@ -43,6 +40,4 @@ async def get_data_for_block(i):
   st_yeth_crvusd = st_yeth_total_assets / st_yeth_total_supply * yeth_eth_price_oracle * cl_eth_usd / cl_crvusd_usd
   eth_crvusd = cl_eth_usd / cl_crvusd_usd
 
-
-  block = await dank_w3.eth.get_block(i)
-  return [i, block['timestamp'], st_yeth_crvusd, eth_crvusd]
+  return [i, block.timestamp, st_yeth_crvusd, eth_crvusd]

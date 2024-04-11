@@ -49,7 +49,7 @@ contract StYethCurveLendOracle {
 
     function rawPrice() internal view returns (uint256) {
         return
-            (ST_YETH.totalAssets() * 1e18) / ST_YETH.totalSupply() * TRICRYPTO_USDC.price_oracle(1) * USDC_CRVUSD.price_oracle() / 1e36;
+            (ST_YETH.totalAssets() * 1e18) / ST_YETH.totalSupply() * TRICRYPTO_USDC.price_oracle(1) / USDC_CRVUSD.price_oracle() / 1e18;
     }
 
     function min(uint256 a, uint256 b) internal pure returns (uint256) {
